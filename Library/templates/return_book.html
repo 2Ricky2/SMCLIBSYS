@@ -1,0 +1,39 @@
+{% extends "master.html" %}
+
+{% block title %}
+    SMC Library
+{% endblock %}
+
+{% block content %}
+
+    <h2>Return Book</h2>
+    <a href="{% url 'pagemain' %}">Back to Main</a>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="isbn" placeholder="Enter ISBN..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if borrower_info %}
+        <h3>Book Found</h3>
+        <p><strong>Title:</strong> {{ borrower_info.book.title }}</p>
+        <p><strong>Borrowed by:</strong> {{ borrower_info.borrower.firstname }} {{ borrower_info.borrower.lastname }}</p>
+
+        {% if borrower_info.book.status %}
+            <p style="color: green;">This book has already been returned.</p>
+        {% else %}
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="isbn" value="{{ borrower_info.book.isbn }}">
+                <input type="hidden" name="confirm_return" value="true">
+                <button type="submit">Confirm Return</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

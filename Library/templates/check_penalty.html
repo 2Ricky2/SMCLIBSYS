@@ -1,0 +1,37 @@
+{% extends "master.html" %}
+
+{% block title %}Check Penalty{% endblock %}
+
+{% block content %}
+<h2>Check Student Penalties</h2>
+<a href="{% url 'pagemain' %}">Back to Main</a>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="student_id" placeholder="Scan or Enter Student ID" autofocus required>
+    <button type="submit">Check</button>
+</form>
+
+{% if penalty_info %}
+    <h3>{{ penalty_info.student.firstname }} {{ penalty_info.student.lastname }}</h3>
+
+    {% if penalty_info.overdue %}
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Due Date</th>
+                <th>Days Late</th>
+                <th>Penalty (₱)</th>
+            </tr>
+            {% for o in penalty_info.overdue %}
+            <tr>
+                <td>{{ o.due_date }}</td>
+                <td>{{ o.days_late }}</td>
+                <td>{{ o.amount_due }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h4>Total Penalty: ₱{{ penalty_info.total_due }}</h4>
+    {% else %}
+        <p>No overdue books.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

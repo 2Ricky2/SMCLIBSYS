@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+
+{% block title %}
+    SMC Library
+{% endblock %}
+
+{% block content %}
+
+<h2>Welcome, To SMC Library</h2>
+<a href="{% url 'search' %}">search books</a><br>
+<a href="{% url 'add_book' %}">Add Book</a><br>
+<a href="{% url 'book_list' %}">View All Books</a><br>
+<a href="{% url 'borrow_book' %}">Borrow Book</a><br>
+<a href="{% url 'check_penalty' %}">Check Student Penalty</a><br>
+<a href="{% url 'manage_reservations' %}">Manage Book Reservations</a><br>
+<a href="{% url 'accepted_reservations' %}">List of Reservations</a><br>
+<a href="{% url 'return_book' %}">Return Book</a><br><br>
+<a href="{% url 'login' %}">Logout</a><br>
+<a href="{% url 'register' %}">Register an Admin</a>
+
+
+{% endblock %}

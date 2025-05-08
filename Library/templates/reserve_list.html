@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+
+{% block title %}
+    SMC Library
+{% endblock %}
+
+{% block content %}
+
+<h2>Accepted Reservations</h2>
+<a href="{% url 'pagemain' %}">Back to Main</a>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Search by student ID..." value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
+
+<table border="1" cellspacing="0" cellpadding="8">
+    <tr>
+        <th>Book Title</th>
+        <th>Student Name</th>
+        <th>Student ID</th>
+        <th>Reserved At</th>
+        <th>Expires At</th>
+        <th>Action</th>
+    </tr>
+    {% for res in reservations %}
+    <tr>
+        <td>{{ res.book.title }}</td>
+        <td>{{ res.student.firstname }} {{ res.student.lastname }}</td>
+        <td>{{ res.student.student_id }}</td>
+        <td>{{ res.reserved_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ res.expires_at|date:"Y-m-d H:i" }}</td>
+        <td>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                <button type="submit">Confirm Slip & Borrow</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">No accepted reservations found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'master.html' %}
+{% block title %}Manage Reservations{% endblock %}
+
+{% block content %}
+<h2>Reservations for {{ selected_date }}</h2>
+<a href="{% url 'pagemain' %}">Back to Main</a>
+
+<div style="margin-bottom: 1rem;">
+    <a href="?date={{ prev_day }}"><button>← Previous Day</button></a>
+    <a href="?date={{ next_day }}"><button>Next Day →</button></a>
+</div>
+
+{% if reservations %}
+    <ul>
+    {% for reservation in reservations %}
+        <li>
+            {{ reservation.student }} reserved {{ reservation.book }} - Status: {{ reservation.status }}
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                <button name="action" value="accept">reserve</button>
+                <button name="action" value="deny">Deny</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No reservations on this day.</p>
+{% endif %}
+{% endblock %}

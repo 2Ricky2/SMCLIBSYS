@@ -1,0 +1,84 @@
+{% extends "master.html" %}
+
+{% block title %}
+    Student Dashboard - SMC Library
+{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ student.firstname }} {{ student.lastname }}</h2>
+<a href="{% url 'login' %}">Logout</a><br>
+<hr>
+
+<h3>Currently Borrowed Books</h3>
+{% if active_borrowed %}
+    <ul>
+    {% for borrowed in active_borrowed %}
+        <li>
+            <strong>{{ borrowed.Book_id.title }}</strong><br>
+            Borrowed on: {{ borrowed.BorrowSlip_id.Schedule }} | Due: {{ borrowed.BorrowSlip_id.ScheduleDue }}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You currently have no active borrowed books.</p>
+{% endif %}
+
+<hr>
+
+<h3>Returned Books</h3>
+{% if returned_borrowed %}
+    <ul>
+    {% for borrowed in returned_borrowed %}
+        <li>
+            <strong>{{ borrowed.Book_id.title }}</strong><br>
+            Originally Borrowed: {{ borrowed.BorrowSlip_id.Schedule }} | Due: {{ borrowed.BorrowSlip_id.ScheduleDue }}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No returned books found.</p>
+{% endif %}
+
+<hr>
+
+<h3>Reserve a Book</h3>
+<form method="get">
+    <input type="text" name="q" placeholder="Search books..." value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
+
+{% if books %}
+    <form method="post">
+        {% csrf_token %}
+        <ul>
+        {% for book in books %}
+            <li>
+                <strong>{{ book.title }}</strong> by {{ book.author }}
+                <button type="submit" name="book_id" value="{{ book.id }}">Reserve</button>
+            </li>
+        {% endfor %}
+        </ul>
+    </form>
+{% else %}
+    <p>No available books found or all books are reserved.</p>
+{% endif %}
+
+
+<hr>
+
+<h3>My Recent Reservations</h3>
+{% if reservations %}
+    <ul>
+    {% for res in reservations %}
+        <li>
+            <strong>{{ res.book.title }}</strong> - {{ res.status|title }}<br>
+            Reserved: {{ res.reserved_at|date:"Y-m-d" }}
+            {% if res.expires_at %} | Expires: {{ res.expires_at|date:"Y-m-d" }}{% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No reservations yet.</p>
+{% endif %}
+
+{% endblock %}

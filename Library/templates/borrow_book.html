@@ -1,0 +1,68 @@
+{% extends "master.html" %}
+
+{% block title %}Borrow Book{% endblock %}
+
+{% block content %}
+<h2>Borrow a Book</h2>
+
+<button onclick="enableScanMode()">Scan IDs</button><br><br>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div id="scan-inputs" style="display:none;">
+        <label for="student_id">Scan Student ID:</label>
+        <input type="text" name="student_id" id="student_id_input" placeholder="Scan Student ID" maxlength="8"><br><br>
+
+        <label for="isbn_input">Scan Book ISBNs:</label>
+        <input type="text" name="isbn_input" maxlength="41" placeholder="Scan Book ISBNs (comma-separated)" required><br><br>
+    </div>
+
+    <div id="manual-select">
+        <label for="student_select">Select Student:</label>
+        <select name="student_select">
+            <option value="">-- Select Student --</option>
+            {% for student in students %}
+                <option value="{{ student.id }}">{{ student.firstname }} {{ student.lastname }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="book_select">Select Book:</label>
+        <select name="book_select">
+            <option value="">-- Select Book --</option>
+            {% for book in books %}
+                {% with status=book.booksstatus_set.first %}
+                    {% if status.BookStatus %}
+                        <option value="{{ book.id }}">{{ book.title }} (ISBN: {{ book.isbn }})</option>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </select><br><br>
+    </div>
+
+    <button type="submit">Confirm Borrow</button>
+</form>
+
+<a href="{% url 'pagemain' %}">Back to Main</a>
+
+<script>
+    function enableScanMode() {
+        const scanInputs = document.getElementById('scan-inputs');
+        const manualSelect = document.getElementById('manual-select');
+        scanInputs.style.display = 'block';
+        manualSelect.style.display = 'none';
+
+        setTimeout(() => {
+            const studentInput = document.getElementById('student_id_input');
+            studentInput.focus();
+
+            studentInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.querySelector('input[name="isbn_input"]').focus();
+                }
+            });
+        }, 300);
+    }
+</script>
+{% endblock %}

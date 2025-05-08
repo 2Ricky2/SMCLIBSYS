@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+
+{% block title %}
+    SMC Library
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'pagemain' %}">Home</a>
+    <form method="get" action="{% url 'search' %}">
+        <input type="text" name="q" placeholder="Search books..." value="{{ query|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if books %}
+        <ul>
+            {% for book in books %}
+                <a href="{% url 'edit_book' book.id %}">
+                {{ book.title }} by {{ book.author }}<br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No books found.</p>
+    {% endif %}
+
+
+{% endblock %}

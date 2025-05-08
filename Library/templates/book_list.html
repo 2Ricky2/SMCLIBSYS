@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% block title %}Book List{% endblock %}
+
+{% block content %}
+<h2>All Books</h2>
+<a href="{% url 'add_book' %}">Add New Book</a><br><br>
+<ul>
+    {% for book in books %}
+        <li>
+            {{ book.title }} by {{ book.author }} -
+        {% if book.booksstatus_set.first.BookStatus %}
+            <strong>Available</strong>
+        {% else %}
+            <strong>Not Available</strong>
+        {% endif %}
+        | <a href="{% url 'edit_book' book.id %}">Edit</a>
+        | <a href="{% url 'delete_book' book.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'pagemain' %}">Back to Main</a>
+{% endblock %}
